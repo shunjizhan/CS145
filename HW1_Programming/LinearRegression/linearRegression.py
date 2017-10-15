@@ -14,10 +14,7 @@ def getDataframe(filePath):
 
 # Applies z-score normalization to the dataframe and returns a normalized dataframe
 def applyZScore(dataframe):
-    normalized_dataframe = dataframe
-    # ---------- Please Fill Missing Lines Here ---------- #
-
-    return normalized_dataframe
+    return (dataframe - dataframe.mean()) / dataframe.std()
 
 
 # train_x and train_y are numpy arrays
@@ -121,10 +118,10 @@ class LinearRegression(object):
 if __name__ == '__main__':
     # Change 1st paramter to 0 for closed form, 1 for batch gradient, 2 for stochastic gradient
     # Add a second paramter with value 1 for z score normalization
-    print '------------------------------------------------'
-    print 'Closed Form Without Normalization'
-    lm = LinearRegression(0)
-    lm.predict()
+    # print '------------------------------------------------'
+    # print 'Closed Form Without Normalization'
+    # lm = LinearRegression(0)
+    # lm.predict()
 
     # print '------------------------------------------------'
     # print 'Batch Gradient Without Normalization'
@@ -136,10 +133,10 @@ if __name__ == '__main__':
     # lm = LinearRegression(2)
     # lm.predict()
 
-    # print '------------------------------------------------'
-    # print 'Closed Form With Normalization'
-    # lm = LinearRegression(0, 1)
-    # lm.predict()
+    print '------------------------------------------------'
+    print 'Closed Form With Normalization'
+    lm = LinearRegression(0, 1)
+    lm.predict()
 
     # print '------------------------------------------------'
     # print 'Batch Gradient With Normalization'
