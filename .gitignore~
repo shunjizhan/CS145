@@ -99,6 +99,3 @@ ENV/
 
 # mypy
 .mypy_cache/
-
-# output file
-HW1_Programming/LinearRegression/output/*
