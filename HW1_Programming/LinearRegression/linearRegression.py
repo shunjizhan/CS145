@@ -23,10 +23,10 @@ def applyZScore(dataframe):
 # train_x and train_y are numpy arrays
 # function returns value of beta calculated using (0) the formula beta = (X^T*X)^ -1)*(X^T*Y)
 def getBeta(train_x, train_y):
-    beta = np.zeros(train_x.shape[1])
-    # ---------- Please Fill Missing Lines Here ---------- #
-
-    return beta
+    X = train_x
+    Y = train_y
+    X_T = np.transpose(X)
+    return np.linalg.inv(X_T.dot(X)).dot(X_T.dot(Y))
 
 
 # train_x and train_y are numpy arrays
@@ -52,11 +52,16 @@ def getBetaStochasticGradient(train_x, train_y, alpha):
 # predicted_y and test_y are the predicted and actual y values respectively as numpy arrays
 # function prints the mean squared error value for the test dataset
 def compute_mse(predicted_y, test_y):
-    mse = 100.0
-    # ---------- Please Fill Missing Lines Here ---------- #
+    size_p = predicted_y.size
+    size_t = test_y.size
+    if (size_p != size_t):
+        print "something is wrong!"
 
-    print
-    print 'MSE: ', mse
+    mse = 0
+    for i in range(size_p):
+        mse += (predicted_y[i] - test_y[i]) ** 2
+
+    print '\nMSE: ', mse * 1.0 / size_p
 
 
 # Linear Regression implementation
@@ -82,6 +87,8 @@ class LinearRegression(object):
         # Prepend columns of 1 for beta 0
         self.train_x.insert(0, 'offset', 1)
         self.test_x.insert(0, 'offset', 1)
+
+        # print self.train_x
 
         self.linearModel()
 
@@ -119,28 +126,28 @@ if __name__ == '__main__':
     lm = LinearRegression(0)
     lm.predict()
 
-    print '------------------------------------------------'
-    print 'Batch Gradient Without Normalization'
-    lm = LinearRegression(1)
-    lm.predict()
+    # print '------------------------------------------------'
+    # print 'Batch Gradient Without Normalization'
+    # lm = LinearRegression(1)
+    # lm.predict()
 
-    print '------------------------------------------------'
-    print 'Stochastic Gradient Without Normalization'
-    lm = LinearRegression(2)
-    lm.predict()
+    # print '------------------------------------------------'
+    # print 'Stochastic Gradient Without Normalization'
+    # lm = LinearRegression(2)
+    # lm.predict()
 
-    print '------------------------------------------------'
-    print 'Closed Form With Normalization'
-    lm = LinearRegression(0, 1)
-    lm.predict()
+    # print '------------------------------------------------'
+    # print 'Closed Form With Normalization'
+    # lm = LinearRegression(0, 1)
+    # lm.predict()
 
-    print '------------------------------------------------'
-    print 'Batch Gradient With Normalization'
-    lm = LinearRegression(1, 1)
-    lm.predict()
+    # print '------------------------------------------------'
+    # print 'Batch Gradient With Normalization'
+    # lm = LinearRegression(1, 1)
+    # lm.predict()
 
-    print '------------------------------------------------'
-    print 'Stochastic Gradient With Normalization'
-    lm = LinearRegression(2, 1)
-    lm.predict()
-    print '------------------------------------------------'
+    # print '------------------------------------------------'
+    # print 'Stochastic Gradient With Normalization'
+    # lm = LinearRegression(2, 1)
+    # lm.predict()
+    # print '------------------------------------------------'
