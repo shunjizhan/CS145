@@ -26,13 +26,23 @@ def getBeta(train_x, train_y):
     return np.linalg.inv(X_T.dot(X)).dot(X_T.dot(Y))
 
 
+def derivative(X, y, beta):
+    delta = np.zeros(X.shape[1])
+    for i in range(X.shape[0]):
+        xi_T = X[i, :]
+        xi = np.transpose(xi_T)
+        yi = y[i]
+        delta += (xi * (xi_T.dot(beta) - yi))
+    return delta
+
+
 # train_x and train_y are numpy arrays
 # alpha (learning rate) is a scalar
 # function returns value of beta calculated using (1) batch gradient descent
 def getBetaBatchGradient(train_x, train_y, alpha):
     beta = np.random.rand(train_x.shape[1])
-    # ---------- Please Fill Missing Lines Here ---------- #
-
+    for i in range(1000):
+        beta -= alpha * derivative(train_x, train_y, beta)
     return beta
 
 
@@ -70,7 +80,7 @@ class LinearRegression(object):
         # 2 - stochastic gradient
     # Performs z-score normalization if z_score is 1
     def __init__(self, beta_type, z_score=0):
-        self.alpha = 0.001
+        self.alpha = 0.00001
         self.beta_type = beta_type
         self.z_score = z_score
 
@@ -93,16 +103,13 @@ class LinearRegression(object):
     def linearModel(self):
         if(self.beta_type == 0):
             self.beta = getBeta(self.train_x.values, self.train_y.values)
-            print 'Beta: '
-            print self.beta
+            self.printBeta()
         elif(self.beta_type == 1):
             self.beta = getBetaBatchGradient(self.train_x.values, self.train_y.values, self.alpha)
-            print 'Beta: '
-            print self.beta
+            self.printBeta()
         elif(self.beta_type == 2):
             self.beta = getBetaStochasticGradient(self.train_x.values, self.train_y.values, self.alpha)
-            print 'Beta: '
-            print self.beta
+            self.printBeta()
         else:
             print 'Incorrect beta_type! Usage: 0 - closed form solution, 1 - batch gradient descent, 2 - stochastic gradient descent'
 
@@ -114,6 +121,10 @@ class LinearRegression(object):
         np.savetxt('output/linear-regression-output' + '_' + str(self.beta_type) + '_' + str(self.z_score) + '.txt', self.predicted_y)
         compute_mse(self.predicted_y, self.test_y.values)
 
+    def printBeta(self):
+        print 'Beta: '
+        print self.beta
+
 
 if __name__ == '__main__':
     # Change 1st paramter to 0 for closed form, 1 for batch gradient, 2 for stochastic gradient
@@ -123,20 +134,20 @@ if __name__ == '__main__':
     # lm = LinearRegression(0)
     # lm.predict()
 
-    # print '------------------------------------------------'
-    # print 'Batch Gradient Without Normalization'
-    # lm = LinearRegression(1)
-    # lm.predict()
+    print '------------------------------------------------'
+    print 'Batch Gradient Without Normalization'
+    lm = LinearRegression(1)
+    lm.predict()
 
     # print '------------------------------------------------'
     # print 'Stochastic Gradient Without Normalization'
     # lm = LinearRegression(2)
     # lm.predict()
 
-    print '------------------------------------------------'
-    print 'Closed Form With Normalization'
-    lm = LinearRegression(0, 1)
-    lm.predict()
+    # print '------------------------------------------------'
+    # print 'Closed Form With Normalization'
+    # lm = LinearRegression(0, 1)
+    # lm.predict()
 
     # print '------------------------------------------------'
     # print 'Batch Gradient With Normalization'
