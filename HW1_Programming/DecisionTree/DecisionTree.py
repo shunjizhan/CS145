@@ -5,6 +5,7 @@ import numpy as np
 from sklearn.model_selection import KFold
 from collections import Counter
 
+
 # Class for instances with operations
 class Instances(object):
     def __init__(self):
@@ -95,8 +96,8 @@ class DecisionTree(object):
         self.instances = _instances
         self.sel_func = _sel_func
         self.gain_function = compute_info_gain if _sel_func == 0 else comput_gain_ratio
-        self.m_attr_idx = None # The decision attribute if the node is a branch
-        self.m_class = None # The decision class if the node is a leaf
+        self.m_attr_idx = None  # The decision attribute if the node is a branch
+        self.m_class = None  # The decision class if the node is a leaf
         self.make_tree()
 
     def make_tree(self):
