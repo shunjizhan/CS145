@@ -36,14 +36,26 @@ def derivative(X, y, beta):
     return delta
 
 
+def cost(X, y, beta):
+    temp = X.dot(beta) - y
+    return np.transpose(temp).dot(temp)
+
+
 # train_x and train_y are numpy arrays
 # alpha (learning rate) is a scalar
 # function returns value of beta calculated using (1) batch gradient descent
 def getBetaBatchGradient(train_x, train_y, alpha):
     beta = np.random.rand(train_x.shape[1])
-    for i in range(1000):
-        beta -= alpha * derivative(train_x, train_y, beta)
-    return beta
+    while(True):
+        beta_old = beta
+        beta = beta - alpha * derivative(train_x, train_y, beta)
+
+        cost_old = cost(train_x, train_y, beta_old)
+        cost_new = cost(train_x, train_y, beta)
+        increase = cost_old - cost_new
+
+        if(increase < 1):
+            return beta_old
 
 
 # train_x and train_y are numpy arrays
@@ -80,7 +92,7 @@ class LinearRegression(object):
         # 2 - stochastic gradient
     # Performs z-score normalization if z_score is 1
     def __init__(self, beta_type, z_score=0):
-        self.alpha = 0.00001
+        self.alpha = 0.00002
         self.beta_type = beta_type
         self.z_score = z_score
 
@@ -149,10 +161,10 @@ if __name__ == '__main__':
     # lm = LinearRegression(0, 1)
     # lm.predict()
 
-    # print '------------------------------------------------'
-    # print 'Batch Gradient With Normalization'
-    # lm = LinearRegression(1, 1)
-    # lm.predict()
+    print '------------------------------------------------'
+    print 'Batch Gradient With Normalization'
+    lm = LinearRegression(1, 1)
+    lm.predict()
 
     # print '------------------------------------------------'
     # print 'Stochastic Gradient With Normalization'
