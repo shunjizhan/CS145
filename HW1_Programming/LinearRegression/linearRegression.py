@@ -46,16 +46,18 @@ def cost(X, y, beta):
 # function returns value of beta calculated using (1) batch gradient descent
 def getBetaBatchGradient(train_x, train_y, alpha):
     beta = np.random.rand(train_x.shape[1])
+    cost_old = 999999
     while(True):
         beta_old = beta
         beta = beta - alpha * derivative(train_x, train_y, beta)
 
-        cost_old = cost(train_x, train_y, beta_old)
         cost_new = cost(train_x, train_y, beta)
         increase = cost_old - cost_new
 
         if(increase < 1):
             return beta_old
+        else:
+            cost_old = cost_new
 
 
 # train_x and train_y are numpy arrays
@@ -63,7 +65,23 @@ def getBetaBatchGradient(train_x, train_y, alpha):
 # function returns value of beta calculated using (2) stochastic gradient descent
 def getBetaStochasticGradient(train_x, train_y, alpha):
     beta = np.random.rand(train_x.shape[1])
-    # ---------- Please Fill Missing Lines Here ---------- #
+    cost_old = 999999
+    while(True):
+        beta_old = beta
+        for i in range(train_x.shape[0]):
+            xi_T = train_x[i, :]
+            xi = np.transpose(xi_T)
+            yi = train_y[i]
+            beta = beta + alpha * (yi - xi_T.dot(beta)) * xi
+
+        cost_new = cost(train_x, train_y, beta)
+        increase = cost_old - cost_new
+
+        # print increase
+        if(increase < 1):
+            return beta_old
+        else:
+            cost_old = cost_new
 
     return beta
 
@@ -141,33 +159,33 @@ class LinearRegression(object):
 if __name__ == '__main__':
     # Change 1st paramter to 0 for closed form, 1 for batch gradient, 2 for stochastic gradient
     # Add a second paramter with value 1 for z score normalization
-    # print '------------------------------------------------'
-    # print 'Closed Form Without Normalization'
-    # lm = LinearRegression(0)
-    # lm.predict()
+    print '------------------------------------------------'
+    print 'Closed Form Without Normalization'
+    lm = LinearRegression(0)
+    lm.predict()
 
     print '------------------------------------------------'
     print 'Batch Gradient Without Normalization'
     lm = LinearRegression(1)
     lm.predict()
 
-    # print '------------------------------------------------'
-    # print 'Stochastic Gradient Without Normalization'
-    # lm = LinearRegression(2)
-    # lm.predict()
+    print '------------------------------------------------'
+    print 'Stochastic Gradient Without Normalization'
+    lm = LinearRegression(2)
+    lm.predict()
 
-    # print '------------------------------------------------'
-    # print 'Closed Form With Normalization'
-    # lm = LinearRegression(0, 1)
-    # lm.predict()
+    print '------------------------------------------------'
+    print 'Closed Form With Normalization'
+    lm = LinearRegression(0, 1)
+    lm.predict()
 
     print '------------------------------------------------'
     print 'Batch Gradient With Normalization'
     lm = LinearRegression(1, 1)
     lm.predict()
 
-    # print '------------------------------------------------'
-    # print 'Stochastic Gradient With Normalization'
-    # lm = LinearRegression(2, 1)
-    # lm.predict()
-    # print '------------------------------------------------'
+    print '------------------------------------------------'
+    print 'Stochastic Gradient With Normalization'
+    lm = LinearRegression(2, 1)
+    lm.predict()
+    print '------------------------------------------------'
