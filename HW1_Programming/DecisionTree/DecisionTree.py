@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import sys
 import random
+import math
 import numpy as np
 from sklearn.model_selection import KFold
 from collections import Counter
@@ -14,7 +15,6 @@ class Instances(object):
         self.num_attrs = -1
         self.num_instances = 0
         self.attr_set = []
-        
 
     def add_instance(self, _lbl, _attrs):
         self.label.append(_lbl)
@@ -26,10 +26,8 @@ class Instances(object):
         self.num_instances += 1
         assert(self.num_instances == len(self.label))
 
-    
     def make_attr_set(self):
         self.attr_set = [set([self.attrs[i][j] for i in range(self.num_instances)]) for j in range(self.num_attrs)]
-
 
     def load_file(self, file_name):
         with open(file_name, 'r') as f:
@@ -38,18 +36,16 @@ class Instances(object):
                 self.add_instance(data[0], data[1:])
         self.make_attr_set()
         return self
-    
 
     def split(self, att_idx):
         assert(0 <= att_idx < self.num_attrs)
         split_data = {x: Instances() for x in self.attr_set[att_idx]}
         for i in range(self.num_instances):
-            key = self.attrs[i][att_idx] 
+            key = self.attrs[i][att_idx]
             split_data[key].add_instance(self.label[i], self.attrs[i])
         for key in split_data:
             split_data[key].attr_set = self.attr_set
         return split_data
-    
 
     def shuffle(self):
         indices = list(range(len(self.label)))
@@ -60,7 +56,6 @@ class Instances(object):
         res.attr_set = self.attr_set
         return res
 
-
     def get_subset(self, keys):
         res = Instances()
         for x in keys:
@@ -69,16 +64,34 @@ class Instances(object):
         return res
 
 
+def entropy(counts):
+    total = np.sum(counts)
+    entropy = 0
+    for x in counts:
+        pi = x * 1.0 / total
+        entropy -= pi * math.log(pi, 2)
+    return entropy
+
+
 def compute_entropy(data):
     total_entropy = 0.0
-    ########## Please Fill Missing Lines Here ##########
+    counter = Counter(data.label)
+    counts = [counter[label] for label in counter]
 
-    return total_entropy
-    
+    return entropy(counts)
+
 
 def compute_info_gain(data, att_idx):
-    info_gain = 0.0
-    ########## Please Fill Missing Lines Here ##########
+    entropy_old = compute_entropy(data)
+    entropy_new = 0
+    split_data = data.split(att_idx)
+
+    for attr, data in split_data.items():
+        entropy_new += compute_entropy(data)
+        # print(key, type(value))
+    # print('--------')
+
+    info_gain = entropy_old - entropy_new
 
     return info_gain
 
@@ -106,11 +119,11 @@ class DecisionTree(object):
             self.m_class = '**MISSING**'
         else:
             gains = [self.gain_function(self.instances, i) for i in range(self.instances.num_attrs)]
-            self.m_attr_idx = np.argmax(gains)
+            self.m_attr_idx = np.argmax(gains)      # index of max gain in all attributes
             if np.abs(gains[self.m_attr_idx]) < 1e-9:
                 # A leaf to decide the decided class
                 self.m_attr_idx = None
-                ########## Please Fill Missing Lines Here ##########
+                self.m_class = Counter(self.instances.label).most_common(1)[0][0]
 
             else:
                 # A branch
@@ -120,13 +133,12 @@ class DecisionTree(object):
                     self.m_successors[x].make_tree()
 
     def classify(self, attrs):
-        assert((self.m_attr_idx != None) or (self.m_class != None))
-        if self.m_attr_idx == None:
+        assert((self.m_attr_idx is not None) or (self.m_class is not None))
+        if self.m_attr_idx is None:
             return self.m_class
         else:
             return self.m_successors[attrs[self.m_attr_idx]].classify(attrs)
-            
- 
+
 
 if __name__ == '__main__':
     if len(sys.argv) < 1 + 1:
@@ -140,7 +152,9 @@ if __name__ == '__main__':
 
     data = Instances().load_file(sys.argv[1])
     data = data.shuffle()
-    
+
+    # print(data.attr_set)
+
     # 5-Fold CV
     kf = KFold(n_splits=5)
     n_fold = 0
