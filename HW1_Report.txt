@@ -1,0 +1,24 @@
+CS145 HW1 Report
+Shunji Zhan
+405030387
+
+Linear Regression:
+1.1[scan]
+
+Code Explanation:
+compute_mse():
+I just used the formula to compute each difference between predict_y and real_y, sqaure them and add together.
+
+getBeta():
+this is straight forward, just plug in the formula and return (X^T*X)^ -1)*(X^T*Y)
+
+getBetaBatchGradient():
+I set up a infinite loop and update beta using the formula in each iteration. I implemented a helper function derivative() to make the formula looks more clean. 
+In each iteration I calculated the previous cost and current cost after updating beta, if calculate the increase in cost. If the increase is less than 1 I will stop the iteration and return the beta.
+
+getBetaStochasticGradient():
+I set up a infinite loop and update beta using the formula in each iteration. What's different from batch gradient was that in each loop, each sample xi will update the beta, so it updates more constantly.
+In each iteration I calculated the previous cost and current cost after updating beta, if calculate the increase in cost. If the increase is less than 1 I will stop the iteration and return the beta.
+
+applyZScore():
+use the formula directly
