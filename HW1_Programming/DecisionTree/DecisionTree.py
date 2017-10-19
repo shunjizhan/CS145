@@ -64,43 +64,52 @@ class Instances(object):
         return res
 
 
-def entropy(counts):
-    total = np.sum(counts)
-    entropy = 0
-    for x in counts:
-        pi = x * 1.0 / total
-        entropy -= pi * math.log(pi, 2)
+def entropy(data):
+    entropy = 0.0
+    counter = Counter(data.label)
+    total = data.num_instances
+    assert(total == len(data.label))
+
+    for label, count in counter.items():
+        ratio = count * 1.0 / total
+        entropy -= ratio * math.log(ratio, 2)
+
     return entropy
 
 
-def compute_entropy(data):
-    total_entropy = 0.0
-    counter = Counter(data.label)
-    counts = [counter[label] for label in counter]
-
-    return entropy(counts)
-
-
 def compute_info_gain(data, att_idx):
-    entropy_old = compute_entropy(data)
-    entropy_new = 0
+    entropy_old = entropy(data)
+    entropy_new = 0.0
+    total_instances = data.num_instances
     split_data = data.split(att_idx)
 
-    for attr, data in split_data.items():
-        entropy_new += compute_entropy(data)
-        # print(key, type(value))
-    # print('--------')
+    for attr, data_branch in split_data.items():
+        ratio = data_branch.num_instances * 1.0 / total_instances
+        entropy_new += ratio * entropy(data_branch)
 
-    info_gain = entropy_old - entropy_new
-
-    return info_gain
+    return entropy_old - entropy_new
 
 
-def comput_gain_ratio(data, att_idx):
-    gain_ratio = 0.0
-    ########## Please Fill Missing Lines Here ##########
+def compute_gain_ratio(data, att_idx):
+    entropy_old = entropy(data)
+    entropy_new = 0.0
 
-    return gain_ratio
+    split_data = data.split(att_idx)
+    total_instances = data.num_instances
+    split_info = 0
+
+    for attr, data_branch in split_data.items():
+        ratio = data_branch.num_instances * 1.0 / total_instances
+        entropy_new += ratio * entropy(data_branch)
+        if (ratio != 0):
+            split_info -= ratio * math.log(ratio, 2)
+
+    if (split_info == 0):
+        split_info = 0.1
+
+    gain = entropy_old - entropy_new
+
+    return float(gain) / split_info
 
 
 # Class of the decision tree model based on the ID3 algorithm
@@ -108,7 +117,7 @@ class DecisionTree(object):
     def __init__(self, _instances, _sel_func):
         self.instances = _instances
         self.sel_func = _sel_func
-        self.gain_function = compute_info_gain if _sel_func == 0 else comput_gain_ratio
+        self.gain_function = compute_info_gain if _sel_func == 0 else compute_gain_ratio
         self.m_attr_idx = None  # The decision attribute if the node is a branch
         self.m_class = None  # The decision class if the node is a leaf
         self.make_tree()
@@ -120,6 +129,7 @@ class DecisionTree(object):
         else:
             gains = [self.gain_function(self.instances, i) for i in range(self.instances.num_attrs)]
             self.m_attr_idx = np.argmax(gains)      # index of max gain in all attributes
+            # print(gains)
             if np.abs(gains[self.m_attr_idx]) < 1e-9:
                 # A leaf to decide the decided class
                 self.m_attr_idx = None
@@ -146,14 +156,12 @@ if __name__ == '__main__':
         sys.exit(0)
     random.seed(27145)
     np.random.seed(27145)
-    
+
     sel_func = int(sys.argv[2]) if len(sys.argv) > 1 + 1 else 0
-    assert(0 <= sel_func <= 1) 
+    assert(0 <= sel_func <= 1)
 
     data = Instances().load_file(sys.argv[1])
     data = data.shuffle()
-
-    # print(data.attr_set)
 
     # 5-Fold CV
     kf = KFold(n_splits=5)

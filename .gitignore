@@ -102,3 +102,6 @@ ENV/
 
 # output file
 HW1_Programming/LinearRegression/output/*
+
+
+*.pyc

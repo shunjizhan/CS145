@@ -186,11 +186,46 @@ MSE:  4.3888817496
 
 For each version of the linear model, Beta and MSE are not the same. The reason is that for the same dataset there are lots of possible beta to construct a good linear model, the beta don't have to be the same. And different algorithms result in different Betas, so that the difference between real y and prdicted y are slightly different in these algorithms, resulting in different MSE.
 
-After applying the z score normalization, we saw that the beta changed totally. And from the result we can see that the MSE decrease really sligthly, compared to non-normalized data.
+After applying the z score normalization, we saw that the beta changed totally. And from the result we can see that the MSE decrease really sligthly, compared to non-normalized data. 
 
 
 
 
+
+Decision Tree:
+Result:
+
+$ python3 DecisionTree.py house-votes-84.data 0
+Fold-1: 0.9310344827586207
+Fold-2: 0.9080459770114943
+Fold-3: 0.9655172413793104
+Fold-4: 0.8850574712643678
+Fold-5: 0.9310344827586207
+5-CV Accuracy = 0.9241379310344827
+
+$ python3 DecisionTree.py house-votes-84.data 1
+Fold-1: 0.9195402298850575
+Fold-2: 0.9195402298850575
+Fold-3: 0.9540229885057471
+Fold-4: 0.8850574712643678
+Fold-5: 0.9310344827586207
+5-CV Accuracy = 0.9218390804597701
+
+$ python3 DecisionTree.py tic-tac-toe.data 0
+Fold-1: 0.875
+Fold-2: 0.8333333333333334
+Fold-3: 0.8333333333333334
+Fold-4: 0.8167539267015707
+Fold-5: 0.8272251308900523
+5-CV Accuracy = 0.837129144851658
+
+$ python3 DecisionTree.py tic-tac-toe.data 1
+Fold-1: 0.8802083333333334
+Fold-2: 0.8229166666666666
+Fold-3: 0.8177083333333334
+Fold-4: 0.837696335078534
+Fold-5: 0.837696335078534
+5-CV Accuracy = 0.8392452006980804
 
 
 
