@@ -44,15 +44,12 @@ class logistic:
     def gradients(self):
         X, Y, beta = self.X, self.Y, self.beta
 
-        gradients = []
-        for j in range(self.M):
-            sum = 0
-            for i in range(self.N):
-                exp_betaT_xi = exp(transpose(beta).dot(X[i]))
-                # print exp_betaT_xi
-                sum += X[i][j] * (Y[i] - (exp_betaT_xi / (1 + exp_betaT_xi)))
-
-            gradients.append(sum)
+        gradients = np.zeros(self.N)
+        for i in range(self.N):
+            exp_betaT_xi = exp(transpose(beta).dot(X[i]))
+            p = exp_betaT_xi / (1 + exp_betaT_xi)
+            # print exp_betaT_xi
+            gradients += X[i] * (Y[i] - p)
 
         return gradients
 
