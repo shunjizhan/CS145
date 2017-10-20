@@ -76,7 +76,7 @@ class logistic:
         hessian_inv = inv(hessian)
         self.parameters = self.parameters - hessian_inv.dot(gradients)
 
-        print (gradients)
+        # print (gradients)
         return self.parameters
 
 
@@ -85,4 +85,4 @@ iterations = 2
 for i in range(iterations):
     l = logistic(parameters)
     parameters = l.iterate()
-    print (parameters)
+print (parameters)
