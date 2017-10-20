@@ -189,6 +189,10 @@ For each version of the linear model, Beta and MSE are not the same. The reason 
 After applying the z score normalization, we saw that the beta changed totally. And from the result we can see that the MSE decrease really sligthly, compared to non-normalized data. 
 
 
+Logistic Regression:
+$ python logicsticRegression.py 
+[-19.72536249  76.65485643 -45.49392387]
+
 
 
 
