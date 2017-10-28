@@ -1,6 +1,6 @@
 import math
 import numpy as np
-from numpy.linalg import inv
+from numpy.linalg import pinv
 from sklearn.preprocessing import normalize
 
 
@@ -51,37 +51,42 @@ class logistic:
             # print exp_betaT_xi
             gradients += X[i] * (Y[i] - p)
 
-        return gradients
+        return transpose(np.array(gradients))
 
     def hessian(self):
         X, beta = self.X, self.beta
         n = len(self.parameters)
         hessian = np.zeros((n, n))
 
-        for j in range(n):
-            for i in range(n):
-                # print transpose(beta).dot(X[i])
-                exp_betaT_xi = exp(transpose(beta).dot(X[i]))
-                A = exp_betaT_xi / (1 + exp_betaT_xi) ** 2
-                sum = 0
-                for a in range(n):
-                    sum += X[a][i] * X[a][j] * A
-                hessian[j][i] = -1 * sum
+        for i in range(n):
+            # print transpose(beta).dot(X[i])
+            xi = X[:, i]
+            xi_T = transpose(xi)
+            print xi.dot(xi_T)
+            # print xi_T
+            exp_betaT_xi = exp(transpose(beta).dot(xi))
+            p = exp_betaT_xi / (1 + exp_betaT_xi)
+            hessian -= xi.dot(xi_T) * p * (1 - p)
         return hessian
 
     def iterate(self):
         # log_likelihood = self.log_likelihood()
         gradients = self.gradients()
         hessian = self.hessian()
-        hessian_inv = inv(hessian)
+        hessian_inv = pinv(hessian)
+        # print hessian 
+        # print hessian_inv
+        # print gradients
+        # print hessian_inv.dot(gradients)
         self.parameters = self.parameters - hessian_inv.dot(gradients)
 
         # print (gradients)
+        # print self.log_likelihood()
         return self.parameters
 
 
 parameters = [0.25, 0.25, 0.25]
-iterations = 2
+iterations = 1
 for i in range(iterations):
     l = logistic(parameters)
     parameters = l.iterate()
