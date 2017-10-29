@@ -1,3 +1,4 @@
+import math
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -10,7 +11,7 @@ w = 0.9492 * v(0.91, 0.32) + 0.3030 * (-1) * v(2.05, 1.54) + 0.9053 * (-1) * v(2
 print "w=", w
 
 b = (1 - 1 - 1 - w.dot(v(0.91, 0.32) + v(2.05, 1.54) + v(2.34, 0.72))) / 3
-print b
+print "b=", b
 
 
 def y(x):
@@ -19,6 +20,10 @@ def y(x):
 
 def y_array(x_array):
     return [y(x) for x in x_array]
+
+
+def classify(x1, x2):
+    return (v(x1, x2).dot(w) + b) 
 
 
 if __name__ == '__main__':
@@ -35,6 +40,7 @@ if __name__ == '__main__':
         [2.59, 2.87, 3.04, 2.64, -0.52, 1.3, -0.56, 1.54, 0.72, 0.13],
         'bo'
     )
+    plt.axis([-2, 5, -2, 5])
     plt.show()
 
-
+    print classify(-1, 2)
